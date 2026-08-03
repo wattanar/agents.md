@@ -45,6 +45,7 @@ Rules:
 - Encapsulate internal state; expose mutations only through explicit domain methods.
 - Constructors validate invariants and return explicit domain errors.
 - Return domain sentinel errors (e.g., `ErrInsufficientFunds`), never database or framework errors.
+- Domain Services hold logic that spans multiple aggregates or fits no single entity. Application handlers orchestrate; they never contain business rules.
 
 ### 2. Application Layer
 
@@ -53,13 +54,14 @@ Contains: Use Case Handlers (Commands/Queries), DTOs, Application Interfaces (e.
 Rules:
 - Accept and return primitives or primitive-based DTOs. Never leak domain entities to the presentation layer.
 - Handle cross-cutting concerns: transactions, logging, metrics, dispatching domain events.
+- Each use case loads and mutates exactly one aggregate root; a transaction commits one aggregate.
 
 ### 3. Infrastructure Layer
 
 Contains: Repositories, Third-Party API Adapters, Message Brokers.
 
 Rules:
-- Implement the repository interfaces defined by the domain or application layers.
+- Implement the repository interfaces defined by the consumer (application or domain); never define new abstractions here.
 - Use dedicated persistence models distinct from domain entities, mapped explicitly (never persistence annotations on domain types).
 
 ### 4. Interface / Presentation Layer
@@ -73,8 +75,8 @@ Rules:
 ## Anti-Patterns (Refuse to generate these)
 
 - **Leaky Domain Types:** Public mutable fields on domain types that allow state changes without invariant checks.
-- **Persistence Annotations on Domain Types:** Tags/annotations like `gorm:"primaryKey"` or `db:"account_id"` directly on domain entities.
-- **Global State & Singletons:** Storing connections or configuration in module-level variables or `init()` functions instead of passing them via constructors.
+- **Persistence Annotations on Domain Types:** ORM/column annotations (e.g., `gorm:"primaryKey"`, `db:"account_id"`) applied directly to domain entities.
+- **Global State & Singletons:** Storing connections or configuration in module-level state or `init()` routines instead of passing them via constructors.
 - **Dropped Context:** Omitting context/request parameters from repository or application service signatures (where the language provides them).
 - **Mutable Pointers to Value Objects:** Passing immutable value objects as pointers where value semantics are expected.
 
@@ -83,3 +85,5 @@ Rules:
 - Unit-test domain logic directly — no mocks; call domain methods and assert on returned state or errors.
 - Test use cases with simple in-memory fakes implementing the interfaces.
 - Prefer table-driven tests for invariant edges and factory functions.
+
+Language-specific conventions (e.g., Go `internal/` layout, constructor idioms) are documented per project, not here.
