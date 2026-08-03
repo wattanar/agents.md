@@ -5,7 +5,7 @@
 - Prefer composition over centralization: use small focused modules with explicit interfaces instead of centralized systems.
 - Keep responsibilities clear: keep modules focused and avoid mixing transport, orchestration, domain/workflow state, persistence, infrastructure
 - Never skip verification: do not bypass required checks, tests, or quality gates.
-- - Make architectural decisions for the long term.
+- Make architectural decisions for the long term.
   Do not accept a stopgap that only works for now
   and is meant to be replaced later.
 - Lean on the dependencies already in the project before
