@@ -4,7 +4,9 @@
 - Prefer established, well-maintained libraries over custom implementations.
 - Avoid premature abstraction: prefer simple concrete solutions until real patterns emerge.
 - Prefer composition over centralization: use small focused modules with explicit interfaces instead of centralized systems.
-- Keep responsibilities clear: keep modules focused and avoid mixing transport, orchestration, domain/workflow state, persistence, infrastructure
+- Keep responsibilities clear: keep modules focused and avoid mixing transport, orchestration, domain/workflow state, persistence, and infrastructure.
+- Keep module dependencies pointing inward: interface → application → domain. Never let a lower layer depend on a higher one.
+- Error propagation: wrap errors with `fmt.Errorf("context: %w", err)` and only return sentinel errors unwrapped at the domain boundary.
 - Never skip verification: do not bypass required checks, tests, or quality gates.
 - Make architectural decisions for the long term.
   Do not accept a stopgap that only works for now
@@ -112,7 +114,7 @@ import (
 	"fmt"
 )
 
-var ErrInvalidAmount = errors.New("amount must be greater than zero")
+var ErrInvalidAmount = errors.New("amount must be non-negative")
 
 // Money is an immutable Value Object.
 type Money struct {
@@ -122,7 +124,7 @@ type Money struct {
 
 // NewMoney acts as the constructor and enforces invariants.
 func NewMoney(amount int64, currency string) (Money, error) {
-	if amount <= 0 {
+	if amount < 0 {
 		return Money{}, ErrInvalidAmount
 	}
 	if currency == "" {
@@ -195,7 +197,7 @@ func (a *Account) Withdraw(amount Money) error {
 		return ErrInsufficientBalance
 	}
 
-	newBalance, err := a.balance.Add(Money{amount: -amount.Amount(), currency: amount.Currency()})
+	newBalance, err := NewMoney(a.balance.Amount()-amount.Amount(), amount.Currency())
 	if err != nil {
 		return err
 	}
