@@ -1,6 +1,6 @@
 ---
 name: 'Build Mode'
-description: 'Build mode. Use when implementing features, fixing bugs, writing tests, refactor, design architecture.
+description: 'Build mode. Use when implementing features, fixing bugs, writing tests, refactor, design architecture.'
 ---
 
 # MUST-follow rules for agents (language-agnostic)
