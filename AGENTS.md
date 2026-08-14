@@ -1,5 +1,7 @@
 # MUST-follow rules for agents (language-agnostic)
 
+## General
+
 These rules apply to every change in every codebase, regardless of language or framework.
 
 - Choose the simplest implementation that fully meets the current requirements. Do not build beyond what is asked.
