@@ -16,7 +16,6 @@ These rules apply to every change in every codebase, regardless of language or f
 - Lean on the dependencies already in the project before writing your own implementation or adding packages. Do not assume a library lacks a capability without checking its documentation and types.
 - Study how established products solve the problem before designing a solution. Adopt their proven patterns and conventions rather than inventing an approach from scratch.
 - Follow the existing code style, naming conventions, and directory layout of the current repository.
-- Continuously update your knowledge. If you are uncertain about any information, search official documentation, tech blogs, research papers, or tutorials to find valid solutions, understand how things work, debug issues, and implement them correctly.
 
 ## Security awareness                                                                                            
                                                                                                                     
